@@ -47,4 +47,17 @@ class Dense(Layer):
 
         if self.trainable:
             # calculando o gradiente dos pesos da camada w.r.t
+            grad_w = self.layer_input.T.dot(accumulated_gradient)
+            grad_w0 = np.sum(accumulated_gradient, axis = 0, keepdims = True)
             
+            # atualizando pesos da camada
+            self.W = self.W_opt.update(self.W, grad_w)
+            self.w0 = self.w0_opt.update(self.w0, grad_w0)
+        
+        # retornar o gradiente acumulado para a proxima camada (camada anterior a atual)
+        # calculado baseado nos pesos usados durante a etapa forward
+        accumulated_gradient = accumulated_gradient.dot(W.T)
+        return accumulated_gradient
+    
+    def outputShape(self):
+        return (self.n_units, )
