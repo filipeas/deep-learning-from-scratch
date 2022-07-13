@@ -50,3 +50,22 @@ class Network():
         
         # adicionar a camada na rede
         self.layers.append(layer)
+    
+    def testOnBatch(self, X, y):
+        """
+        Avaliando o modelo sobre um pacote simples de exemplo
+        """
+        y_pred = self.forwardPass(X)
+        loss = np.mean(self.loss_function.loss(y, y_pred))
+        acc = self.loss_function.acc(y, y_pred)
+        
+        # calcular o gradiente da função de perda wrt y_pred
+        loss_grad = self.loss_function.gradient(y, y_pred)
+        
+        # função de retropropagação. Atualizar os pesos
+        self.backwardPass(loss_grad = loss_grad)
+        
+        return loss, acc
+    
+    def forwardPass(self, X, training = True):
+        
