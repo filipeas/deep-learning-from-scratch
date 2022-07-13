@@ -67,5 +67,26 @@ class Network():
         
         return loss, acc
     
-    def forwardPass(self, X, training = True):
+    def trainOnBatch(self, X, y):
+        # atualização de gradiente único em um lote (batch) de amostras informados
+        y_pred = self.forwardPass(X)
+        loss = np.mean(self.loss_function.loss(y, y_pred))
+        acc = self.loss_function.acc(y, y_pred)
         
+
+    def forwardPass(self, X, training = True):
+        """"
+        Calculando o output da rede.
+        """
+        layer_output = X
+        for layer in self.layers:
+            layer_output = layer.forwardPass(layer_output, training)
+        
+        return layer_output
+
+    def backwardPass(self, loss_grad):
+        """
+        Propagando o gradiente "para tras" e atualizando os pesos das camadas
+        """
+        for layer in reversed(self.layers):
+            loss_grad = layer.backwardPass(loss_grad)
